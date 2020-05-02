@@ -1,5 +1,4 @@
-import mysql.connector
-import xlrd, xlsxwriter, openpyxl
+import xlsxwriter
 
 workbook = xlsxwriter.Workbook('GeneratedReport.xlsx')
 worksheet = workbook.add_worksheet('Exported')
@@ -42,7 +41,7 @@ def prepare_workbook():
     worksheet.merge_range('A1:Z1', 'xStack: Exported Data - Loyola-ICAM College of Engineering and Technology',
                           merge_format_head)
     worksheet.merge_range('A2:Z2', 'Department of Information Technology', merge_format_head)
-    worksheet.merge_range('A3:Z3', 'Attendance for the Period: Apr 1, 2020 to May 1, 2020', merge_format_head)
+    worksheet.merge_range('A3:Z3', 'Student attendance for the period: Apr 1, 2020 to May 1, 2020', merge_format_head)
     worksheet.merge_range('A4:A5', 'Registration #', merge_format)
     worksheet.merge_range('B4:B5', 'Name of the student', merge_format)
 
