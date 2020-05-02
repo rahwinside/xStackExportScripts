@@ -28,6 +28,7 @@ subject_list = ['x', 'y', 'z']
 
 def prepare_subject_columns(alpha, subject):
     global worksheet, merge_format_subhead, format_subhead2
+
     worksheet.merge_range(alpha + '4:' + (chr(ord(alpha) + 3)) + '4', subject, merge_format_subhead)
     worksheet.write(alpha + '5', "Conducted Periods", format_subhead2);
     worksheet.write((chr(ord(alpha) + 1)) + '5', "Attended Periods", format_subhead2);
