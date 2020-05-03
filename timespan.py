@@ -1,7 +1,9 @@
 import ast
 import sys
 
+import mysql.connector
 import xlsxwriter
+from mysql.connector import errorcode
 
 workbook = xlsxwriter.Workbook('GeneratedReport.xlsm')
 worksheet = workbook.add_worksheet('Exported')
@@ -32,6 +34,51 @@ merge_format = workbook.add_format({
 # department = ""
 # START_DATE = ""
 # END_DATE = ""
+
+
+def mysql_connection():
+    global department
+
+    config = {
+        'user': 'root',
+        'password': 'vcvra-1002',
+        'host': '127.0.0.1',
+        'database': 'xstack',
+        'raise_on_warnings': True
+    }
+
+    try:
+        cnx = mysql.connector.connect(**config)
+
+        cursor = cnx.cursor()
+
+        query = "SELECT * FROM xstack.time_table WHERE dept = %s AND sem = %s"
+        cursor.execute(query, (department, 1))
+
+        sub_pk = []
+        for row in cursor:
+            print(row[8])
+            sub_pk.append(row[8])
+
+        cursor.close()
+
+        for row in sub_pk:
+            looped_cursor = cnx.cursor()
+            looped_query = "SELECT * FROM xstack." + str.lower(row)
+            looped_cursor.execute(looped_query)
+            print(looped_cursor.column_names)
+            looped_cursor.fetchall()
+            looped_cursor.close()
+
+        cnx.close()
+
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Something is wrong with your user name or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database does not exist")
+        else:
+            print(err)
 
 
 def prepare_subject_columns(alpha, subject):
@@ -65,11 +112,12 @@ def prepare_workbook():
 
     workbook.close()
 
-
 department = sys.argv[1]
 subject_list = ast.literal_eval(sys.argv[2])
 START_DATE = sys.argv[3]
 END_DATE = sys.argv[4]
+
+mysql_connection()
 
 print(department, subject_list, START_DATE, END_DATE)
 prepare_workbook()
