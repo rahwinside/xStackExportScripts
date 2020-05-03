@@ -1,12 +1,15 @@
+import sys
+
 import xlsxwriter
 
-workbook = xlsxwriter.Workbook('GeneratedReport.xlsx')
+workbook = xlsxwriter.Workbook('GeneratedReport.xlsm')
 worksheet = workbook.add_worksheet('Exported')
 
 merge_format_head = workbook.add_format({
     'align': 'left',
     'valign': 'vleft',
-    'fg_color': 'yellow'})
+    'fg_color': 'purple',
+    'font_color': 'white'})
 merge_format_subhead = workbook.add_format({
     'border': 1,
     'align': 'center',
@@ -23,7 +26,7 @@ merge_format = workbook.add_format({
     'valign': 'vleft',
     'fg_color': '#87CEEB'})
 
-subject_list = ['x', 'y', 'z']
+subject_list = ['x', 'y', 'z', 'w', 't']
 
 
 def prepare_subject_columns(alpha, subject):
@@ -38,6 +41,8 @@ def prepare_subject_columns(alpha, subject):
 
 def prepare_workbook():
     global workbook, workbook, merge_format_head, merge_format, subject_list
+
+    workbook.add_vba_project('./vbaProject.bin')
 
     worksheet.merge_range('A1:Z1', 'xStack: Exported Data - Loyola-ICAM College of Engineering and Technology',
                           merge_format_head)
@@ -55,4 +60,5 @@ def prepare_workbook():
     workbook.close()
 
 
+subject_list = sys.argv
 prepare_workbook()
