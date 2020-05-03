@@ -1,3 +1,4 @@
+import ast
 import sys
 
 import xlsxwriter
@@ -26,7 +27,11 @@ merge_format = workbook.add_format({
     'valign': 'vleft',
     'fg_color': '#87CEEB'})
 
-subject_list = ['x', 'y', 'z', 'w', 't']
+
+# subject_list = ['x', 'y', 'z', 'w', 't']
+# department = ""
+# START_DATE = ""
+# END_DATE = ""
 
 
 def prepare_subject_columns(alpha, subject):
@@ -40,14 +45,15 @@ def prepare_subject_columns(alpha, subject):
 
 
 def prepare_workbook():
-    global workbook, workbook, merge_format_head, merge_format, subject_list
+    global workbook, workbook, merge_format_head, merge_format, subject_list, START_DATE, END_DATE, department
 
     workbook.add_vba_project('./vbaProject.bin')
 
     worksheet.merge_range('A1:Z1', 'xStack: Exported Data - Loyola-ICAM College of Engineering and Technology',
                           merge_format_head)
-    worksheet.merge_range('A2:Z2', 'Department of Information Technology', merge_format_head)
-    worksheet.merge_range('A3:Z3', 'Student attendance for the period: Apr 1, 2020 to May 1, 2020', merge_format_head)
+    worksheet.merge_range('A2:Z2', 'Department of ' + department, merge_format_head)
+    worksheet.merge_range('A3:Z3', 'Student attendance for the period:' + START_DATE + ' to ' + END_DATE,
+                          merge_format_head)
     worksheet.merge_range('A4:A5', 'Registration #', merge_format)
     worksheet.merge_range('B4:B5', 'Name of the student', merge_format)
 
@@ -60,5 +66,10 @@ def prepare_workbook():
     workbook.close()
 
 
-subject_list = sys.argv
+department = sys.argv[1]
+subject_list = ast.literal_eval(sys.argv[2])
+START_DATE = sys.argv[3]
+END_DATE = sys.argv[4]
+
+print(department, subject_list, START_DATE, END_DATE)
 prepare_workbook()
