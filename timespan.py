@@ -1,5 +1,6 @@
 import ast
 import sys
+from datetime import datetime
 
 import mysql.connector
 import xlsxwriter
@@ -67,6 +68,16 @@ def mysql_connection():
             looped_query = "SELECT * FROM xstack." + str.lower(row)
             looped_cursor.execute(looped_query)
             print(looped_cursor.column_names)
+
+            date_times = looped_cursor.column_names[2:]
+            required_dates = []
+
+            for date in date_times:
+                comparand = datetime.strptime(date.split(" ")[0], "%Y-%m-%d").strftime("%Y-%m-%d")
+                if START_DATE <= comparand <= END_DATE:
+                    required_dates.append(date)
+            print(required_dates)
+
             looped_cursor.fetchall()
             looped_cursor.close()
 
@@ -74,9 +85,9 @@ def mysql_connection():
 
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Something is wrong with your user name or password")
+            print("Something is wrong with your user name or password!")
         elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
+            print("Database does not exist!")
         else:
             print(err)
 
@@ -114,8 +125,8 @@ def prepare_workbook():
 
 department = sys.argv[1]
 subject_list = ast.literal_eval(sys.argv[2])
-START_DATE = sys.argv[3]
-END_DATE = sys.argv[4]
+START_DATE = datetime.strptime(sys.argv[3], "%Y-%m-%d").strftime("%Y-%m-%d")
+END_DATE = datetime.strptime(sys.argv[4], "%Y-%m-%d").strftime("%Y-%m-%d")
 
 mysql_connection()
 
