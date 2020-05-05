@@ -31,7 +31,6 @@ merge_format = workbook.add_format({
 
 # subject_list = ['x', 'y', 'z', 'w', 't']
 # department = ""
-
 # START_DATE = ""
 # END_DATE = ""
 
@@ -75,8 +74,6 @@ def mysql_connection():
             t = (row[2], row[3])
             if t not in sub_code_name:
                 sub_code_name.append(t)
-
-        print(sub_pk, sub_code_name)
 
         cursor.close()
 
@@ -206,7 +203,6 @@ def prepare_workbook():
     worksheet.merge_range('A3:DD3', 'Student attendance for the period: ' + datetime.strptime(sys.argv[2], "%Y-%m-%d")
                           .strftime("%d %B, %Y") + ' to ' +
                           datetime.strptime(sys.argv[3], "%Y-%m-%d").strftime("%d %B, %Y"), merge_format_head)
-
     worksheet.merge_range('A4:A5', 'Registration #', merge_format)
 
     worksheet.merge_range('B4:B5', 'Name of the student', merge_format)
