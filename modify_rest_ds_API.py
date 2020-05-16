@@ -1,12 +1,12 @@
 import sys
-from datetime import time
+from datetime import time, datetime
 
 import mysql.connector
 from mysql.connector import errorcode
 
 
 def mysql_connection():
-    global username, auth_token, day, hour
+    global username, auth_token, day, hour, date
     config = {
         'user': 'root',
         'password': 'vcvra-1002',
@@ -34,6 +34,40 @@ def mysql_connection():
             if row[5] == 7 or row[5] == 8:
                 year = "IV"
             response = {"department": row[4], "year": year, "semester": str(row[5]), "subject": row[2] + " - " + row[3]}
+
+            pk_table = str(row[8]).lower()
+            cursor.close()
+            cursor = cnx.cursor()
+            query = "SHOW COLUMNS FROM xstack." + pk_table
+            cursor.execute(query)
+
+            col_schema = []
+            for col in cursor:
+                col_schema.append(col)
+
+            col_schema = col_schema[2:]
+
+            datetimes = []
+            for col in col_schema:
+                if datetime.strptime(col[0], "%Y-%m-%d %H:%M:%S").date() == date:
+                    datetimes.append(
+                        datetime.strptime(col[0], "%Y-%m-%d %H:%M:%S")
+                    )
+
+            already_taken = False
+            for item in datetimes:
+                if hour == str(find_hour(item.time())):
+                    already_taken = True
+                    required_timestamp = item
+                    break
+
+            if already_taken:
+                response['required_timestamp'] = str(required_timestamp)
+                print(str(response))
+                return
+            else:
+                print("not-taken")
+                return
         print(response)
 
         cnx.close()
@@ -67,8 +101,9 @@ def find_hour(param):
 
 
 username = sys.argv[1]
-auth_token = sys.argv[2]
-hour = sys.argv[3]
+hour = sys.argv[2]
 # day = datetime.today().strftime('%A')
+# date = datetime.now().date()
+date = datetime.strptime("2020-05-15", "%Y-%m-%d").date()
 day = 'Monday'
 mysql_connection()
