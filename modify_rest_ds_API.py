@@ -22,7 +22,7 @@ def mysql_connection():
         query = "SELECT * FROM xstack.time_table WHERE staff_email = %s AND (weekday = %s AND hour = %s)"
         cursor.execute(query, (username, day, hour))
 
-        response = "invalid-request"
+        response = "empty-fetch"
         for row in cursor:
             year = "NA"
             if row[5] == 1 or row[5] == 2:
