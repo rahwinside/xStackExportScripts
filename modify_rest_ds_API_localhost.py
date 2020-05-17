@@ -66,6 +66,7 @@ def mysql_connection():
             if already_taken:
                 response['required_timestamp'] = str(required_timestamp)
                 response['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                response['displaydate'] = str(datetime.now().strftime("%d.%m.%Y - %A"))
                 print(str(response).replace("'", '"'))
                 return
             else:
@@ -120,6 +121,7 @@ def mysql_connection():
             if already_taken:
                 response['required_timestamp'] = str(required_timestamp)
                 response['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                response['displaydate'] = str(datetime.now().strftime("%d.%m.%Y - %A"))
                 print(str(response).replace("'", '"'))
                 return
             else:
