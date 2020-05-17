@@ -10,9 +10,9 @@ def mysql_connection():
     global username, day, hour, date
     config = {
         'user': 'root',
-        'password': '',
+        'password': 'vcvra-1002',
         'host': 'localhost',
-        'database': 'attendance',
+        'database': 'xstack',
         'raise_on_warnings': True
     }
 
@@ -21,7 +21,7 @@ def mysql_connection():
         response = "\"no-class\""
 
         cursor = cnx.cursor()
-        query = "SELECT * FROM attendance.time_table_super WHERE staff_name = %s AND (week_day = %s AND hour = %s)"
+        query = "SELECT * FROM xstack.time_table WHERE staff_email = %s AND (weekday = %s AND hour = %s)"
         cursor.execute(query, (username, day, hour))
 
         for row in cursor:
@@ -40,14 +40,14 @@ def mysql_connection():
             pk_table = str(row[8]).lower()
             cursor.close()
             cursor = cnx.cursor()
-            query = "SHOW COLUMNS FROM attendance." + pk_table
+            query = "SHOW COLUMNS FROM xstack." + pk_table
             cursor.execute(query)
 
             col_schema = []
             for col in cursor:
                 col_schema.append(col)
 
-            col_schema = col_schema[1:]
+            col_schema = col_schema[2:]
 
             datetimes = []
             for col in col_schema:
@@ -74,7 +74,7 @@ def mysql_connection():
         cursor.close()
 
         cursor = cnx.cursor()
-        query = "SELECT * FROM attendance.time_table WHERE staff_name = %s AND (week_day = %s AND hour = %s)"
+        query = "SELECT * FROM xstack.time_table WHERE staff_email = %s AND (weekday = %s AND hour = %s)"
         cursor.execute(query, (username, day, hour))
 
         for row in cursor:
@@ -93,14 +93,14 @@ def mysql_connection():
             pk_table = str(row[8]).lower()
             cursor.close()
             cursor = cnx.cursor()
-            query = "SHOW COLUMNS FROM attendance." + pk_table
+            query = "SHOW COLUMNS FROM xstack." + pk_table
             cursor.execute(query)
 
             col_schema = []
             for col in cursor:
                 col_schema.append(col)
 
-            col_schema = col_schema[1:]
+            col_schema = col_schema[2:]
 
             datetimes = []
             for col in col_schema:
@@ -160,8 +160,8 @@ def find_hour(param):
 
 username = sys.argv[1]
 hour = sys.argv[2]
-day = datetime.today().strftime('%A')
-date = datetime.now().date()
-# date = datetime.strptime("2020-05-15", "%Y-%m-%d").date()
-# day = 'Monday'
+# day = datetime.today().strftime('%A')
+# date = datetime.now().date()
+date = datetime.strptime("2020-05-15", "%Y-%m-%d").date()
+day = 'Monday'
 mysql_connection()

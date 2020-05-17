@@ -18,7 +18,7 @@ def mysql_connection():
 
     try:
         cnx = mysql.connector.connect(**config)
-        response = "\"no-class\""
+        response = "empty-fetch"
 
         cursor = cnx.cursor()
         query = "SELECT * FROM attendance.time_table_super WHERE staff_name = %s AND (week_day = %s AND hour = %s)"
@@ -65,11 +65,10 @@ def mysql_connection():
 
             if already_taken:
                 response['required_timestamp'] = str(required_timestamp)
-                response['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                print(str(response).replace("'", '"'))
+                print(str(response))
                 return
             else:
-                print("\"not-taken\"")
+                print("not-taken")
                 return
         cursor.close()
 
@@ -118,11 +117,10 @@ def mysql_connection():
 
             if already_taken:
                 response['required_timestamp'] = str(required_timestamp)
-                response['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                print(str(response).replace("'", '"'))
+                print(str(response))
                 return
             else:
-                print("\"not-taken\"")
+                print("not-taken")
                 return
         cursor.close()
 
@@ -132,9 +130,9 @@ def mysql_connection():
 
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("\"db-conn-failed\"")
+            print("db-conn-failed")
         elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("\"db-critical-error\"")
+            print("db-critical-error")
         else:
             print(err)
 
@@ -160,8 +158,35 @@ def find_hour(param):
 
 username = sys.argv[1]
 hour = sys.argv[2]
-day = datetime.today().strftime('%A')
-date = datetime.now().date()
+date = datetime.strptime("2020-05-15", "%Y-%m-%d").date()
+day = 'Monday'
+# day = datetime.today().strftime('%A')
+# date = datetime.now().date()
+
+if hour == "1":
+    print(
+        "{\"datetime\": \"15.2.2020 - Monday\", \"department\": \"DIT\", \"year\": \"I\", \"semester\": \"1\", \"subject_code\": \"CS8151\", \"subject_name\": \"Python Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "2":
+    print(
+        "{\"datetime\": \"15.2.2020 - Monday\", \"department\": \"DMEA\", \"year\": \"II\", \"semester\": \"2\", \"subject_code\": \"a\", \"subject_name\": \"C Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "3":
+    print(
+        "{\"datetime\": \"15.2.2020 - Monday\", \"department\": \"DECE\", \"year\": \"III\", \"semester\": \"4\", \"subject_code\": \"b\", \"subject_name\": \"C Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "4":
+    print(
+        "{\"datetime\": \"15.2.2020 - Monday\", \"department\": \"DMECH\", \"year\": \"IV\", \"semester\": \"1\", \"subject_code\": \"c\", \"subject_name\": \"JAVA Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "5":
+    print(
+        "{\"datetime\": \"15.2.2020 - Monday\", \"department\": \"DMECH\", \"year\": \"I\", \"semester\": \"1\", \"subject_code\": \"f\", \"subject_name\": \"Python Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "6":
+    print(
+        "{\"datetime\": \"15.2.2020 - Monday\", \"department\": \"DIT\", \"year\": \"I\", \"semester\": \"1\", \"subject_code\": \"e\", \"subject_name\": \"Python Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "7":
+    print("\"no-class\"")
+if hour == "8":
+    print(
+        "{\"datetime\": \"15.2.2020 - Monday\", \"department\": \"DCSE\", \"year\": \"I\", \"semester\": \"1\", \"subject_code\": \"CS8151\", \"subject_name\": \"Python Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+
 # date = datetime.strptime("2020-05-15", "%Y-%m-%d").date()
 # day = 'Monday'
-mysql_connection()
+# mysql_connection()

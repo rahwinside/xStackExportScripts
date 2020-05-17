@@ -1,0 +1,16 @@
+if hour == "1":
+    print("{\"department\": \"DIT\", \"year\": \"I\", \"semester\": \"1\", \"subject_code\": \"CS8151\", \"subject_name\": \"Python Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "2":
+    print("{\"department\": \"DMECH\", \"year\": \"II\", \"semester\": \"2\", \"subject_code\": \"a\", \"subject_name\": \"C Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "3":
+    print("{\"department\": \"DECE\", \"year\": \"III\", \"semester\": \"4\", \"subject_code\": \"b\", \"subject_name\": \"C Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "4":
+    print("{\"department\": \"DMECH\", \"year\": \"IV\", \"semester\": \"1\", \"subject_code\": \"c\", \"subject_name\": \"JAVA Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "5":
+    print("{\"department\": \"DMECH\", \"year\": \"I\", \"semester\": \"1\", \"subject_code\": \"f\", \"subject_name\": \"Python Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "6":
+    print("{\"department\": \"DIT\", \"year\": \"I\", \"semester\": \"1\", \"subject_code\": \"e\", \"subject_name\": \"Python Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "7":
+    print("{\"department\": \"DEEE\", \"year\": \"I\", \"semester\": \"1\", \"subject_code\": \"CS8151\", \"subject_name\": \"Python Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-15 09:10:12\"}")
+if hour == "8":
+    print("{\"department\": \"DCSE\", \"year\": \"I\", \"semester\": \"1\", \"subject_code\": \"CS8151\", \"subject_name\": \"Python Programming\", \"subCode_dept_sem\": \"cs8151_dit_1\", \"required_timestamp\": \"2020-05-1
