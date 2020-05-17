@@ -10,7 +10,7 @@ def mysql_connection():
     global username, day, hour, date
     config = {
         'user': 'root',
-        'password': '',
+        'password': 'vcvra-1002',
         'host': 'localhost',
         'database': 'attendance',
         'raise_on_warnings': True
@@ -21,7 +21,7 @@ def mysql_connection():
         response = "\"no-class\""
 
         cursor = cnx.cursor()
-        query = "SELECT * FROM attendance.time_table_super WHERE staff_name = {username} AND (week_day = '{day}' AND hour = {hour})".format(
+        query = "SELECT * FROM attendance.time_table_super WHERE staff_name = '{username}' AND (week_day = '{day}' AND hour = {hour})".format(
             username=username, day=day, hour=hour)
         cursor.execute(query)
         for row in cursor:
@@ -75,7 +75,7 @@ def mysql_connection():
         cursor.close()
 
         cursor = cnx.cursor()
-        query = "SELECT * FROM attendance.time_table WHERE staff_name = {username} AND (week_day = '{day}' AND hour = {hour})".format(
+        query = "SELECT * FROM attendance.time_table WHERE staff_name = '{username}' AND (week_day = '{day}' AND hour = {hour})".format(
             username=username, day=day, hour=hour)
         cursor.execute(query)
 
