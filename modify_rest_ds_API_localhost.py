@@ -34,8 +34,8 @@ def mysql_connection():
                 year = "III"
             if row[5] == 7 or row[5] == 8:
                 year = "IV"
-            response = {"department": row[4], "year": year, "semester": str(row[5]), "subject_code": row[3],
-                        "subject_name": row[2], "subCode_dept_sem": row[8].lower()}
+            response = {"department": row[4], "year": year, "semester": str(row[5]), "subject_code": row[2],
+                        "subject_name": row[3], "subCode_dept_sem": row[8].lower()}
 
             pk_table = str(row[8]).lower()
             cursor.close()
@@ -87,8 +87,8 @@ def mysql_connection():
                 year = "III"
             if row[5] == 7 or row[5] == 8:
                 year = "IV"
-            response = {"department": row[4], "year": year, "semester": str(row[5]), "subject_code": row[3],
-                        "subject_name": row[2], "subCode_dept_sem": row[8].lower()}
+            response = {"department": row[4], "year": year, "semester": str(row[5]), "subject_code": row[2],
+                        "subject_name": row[3], "subCode_dept_sem": row[8].lower()}
 
             pk_table = str(row[8]).lower()
             cursor.close()
