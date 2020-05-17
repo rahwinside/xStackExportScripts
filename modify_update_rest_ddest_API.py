@@ -10,7 +10,7 @@ def mysql_connection():
     global pk_table, required_timestamp, req_json
     config = {
         'user': 'root',
-        'password': 'vcvra-1002',
+        'password': '',
         'host': 'localhost',
         'database': 'attendance',
         'raise_on_warnings': True
