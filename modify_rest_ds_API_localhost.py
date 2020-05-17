@@ -10,9 +10,9 @@ def mysql_connection():
     global username, day, hour, date
     config = {
         'user': 'root',
-        'password': 'vcvra-1002',
+        'password': '',
         'host': 'localhost',
-        'database': 'xstack',
+        'database': 'attendance',
         'raise_on_warnings': True
     }
 
@@ -21,9 +21,9 @@ def mysql_connection():
         response = "\"no-class\""
 
         cursor = cnx.cursor()
-        query = "SELECT * FROM xstack.time_table WHERE staff_email = %s AND (weekday = %s AND hour = %s)"
-        cursor.execute(query, (username, day, hour))
-
+        query = "SELECT * FROM attendance.time_table_super WHERE staff_name = {username} AND (week_day = '{day}' AND hour = {hour})".format(
+            username=username, day=day, hour=hour)
+        cursor.execute(query)
         for row in cursor:
             year = "NA"
             if row[5] == 1 or row[5] == 2:
@@ -34,20 +34,20 @@ def mysql_connection():
                 year = "III"
             if row[5] == 7 or row[5] == 8:
                 year = "IV"
-            response = {"department": row[4], "year": year, "semester": str(row[5]), "subject_code": row[2],
-                        "subject_name": row[3], "subCode_dept_sem": row[8].lower()}
+            response = {"department": row[4], "year": year, "semester": str(row[5]), "subject_code": row[3],
+                        "subject_name": row[2], "subCode_dept_sem": row[8].lower()}
 
             pk_table = str(row[8]).lower()
             cursor.close()
             cursor = cnx.cursor()
-            query = "SHOW COLUMNS FROM xstack." + pk_table
+            query = "SHOW COLUMNS FROM attendance." + pk_table
             cursor.execute(query)
 
             col_schema = []
             for col in cursor:
                 col_schema.append(col)
 
-            col_schema = col_schema[2:]
+            col_schema = col_schema[1:]
 
             datetimes = []
             for col in col_schema:
@@ -58,7 +58,7 @@ def mysql_connection():
 
             already_taken = False
             for item in datetimes:
-                if hour == str(find_hour(item.time())):
+                if str(hour) == str(find_hour(item.time())):
                     already_taken = True
                     required_timestamp = item
                     break
@@ -74,8 +74,9 @@ def mysql_connection():
         cursor.close()
 
         cursor = cnx.cursor()
-        query = "SELECT * FROM xstack.time_table WHERE staff_email = %s AND (weekday = %s AND hour = %s)"
-        cursor.execute(query, (username, day, hour))
+        query = "SELECT * FROM attendance.time_table WHERE staff_name = {username} AND (week_day = '{day}' AND hour = {hour})".format(
+            username=username, day=day, hour=hour)
+        cursor.execute(query)
 
         for row in cursor:
             year = "NA"
@@ -87,20 +88,20 @@ def mysql_connection():
                 year = "III"
             if row[5] == 7 or row[5] == 8:
                 year = "IV"
-            response = {"department": row[4], "year": year, "semester": str(row[5]), "subject_code": row[2],
-                        "subject_name": row[3], "subCode_dept_sem": row[8].lower()}
+            response = {"department": row[4], "year": year, "semester": str(row[5]), "subject_code": row[3],
+                        "subject_name": row[2], "subCode_dept_sem": row[8].lower()}
 
             pk_table = str(row[8]).lower()
             cursor.close()
             cursor = cnx.cursor()
-            query = "SHOW COLUMNS FROM xstack." + pk_table
+            query = "SHOW COLUMNS FROM attendance." + pk_table
             cursor.execute(query)
 
             col_schema = []
             for col in cursor:
                 col_schema.append(col)
 
-            col_schema = col_schema[2:]
+            col_schema = col_schema[1:]
 
             datetimes = []
             for col in col_schema:
@@ -111,7 +112,7 @@ def mysql_connection():
 
             already_taken = False
             for item in datetimes:
-                if hour == str(find_hour(item.time())):
+                if str(hour) == str(find_hour(item.time())):
                     already_taken = True
                     required_timestamp = item
                     break
@@ -126,15 +127,15 @@ def mysql_connection():
                 return
         cursor.close()
 
-        print(response)
+        print(response.replace("'", '"'))
 
         cnx.close()
 
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("\"db-conn-failed\"")
+            print("\"db-fetch-error\"")
         elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("\"db-critical-error\"")
+            print("\"db-fetch-error\"")
         else:
             print(err)
 
@@ -159,9 +160,9 @@ def find_hour(param):
 
 
 username = sys.argv[1]
-hour = sys.argv[2]
+hour = int(sys.argv[2])
 # day = datetime.today().strftime('%A')
 # date = datetime.now().date()
 date = datetime.strptime("2020-05-15", "%Y-%m-%d").date()
-day = 'Monday'
+day = "mon"
 mysql_connection()
