@@ -16,6 +16,7 @@ def mysql_connection():
     }
 
     try:
+        json_list = []
         cnx = mysql.connector.connect(**config)
         response = "\"null\""
 
@@ -25,9 +26,27 @@ def mysql_connection():
         cursor.execute(query)
         json = {}
         for row in cursor:
-            json[str(row[0])] = str(row[1])
-            response = str(json)
+            json = {}
+            json['register_no'] = str(row[0])
+            json['status'] = str(row[1])
+            json_list.append(json)
         cursor.close()
+
+        response_list = []
+        for json in json_list:
+            looped_cursor = cnx.cursor()
+            looped_query = "SELECT full_name, semester, department, picture_url FROM attendance.users WHERE register_no = {register_no}".format(
+                register_no=json['register_no'])
+            looped_cursor.execute(looped_query)
+            for row in looped_cursor:
+                json['full_name'] = row[0]
+                json['semester'] = row[1]
+                json['department'] = row[2]
+                json['picture_url'] = row[3]
+                response_list.append(json)
+            looped_cursor.close()
+
+        response = str(response_list)
 
         print(response.replace("'", '"'))
 
