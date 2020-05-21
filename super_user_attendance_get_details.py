@@ -10,7 +10,7 @@ def mysql_connection():
     global department, semester, hour, date, day
     config = {
         'user': 'root',
-        'password': 'vcvra-1002',
+        'password': '',
         'host': 'localhost',
         'database': 'attendance',
         'raise_on_warnings': True
@@ -173,7 +173,8 @@ def find_hour(param):
 
 department = str(sys.argv[1])
 semester = int(sys.argv[2])
-date = int(sys.argv[3])
+
+date = datetime.strptime(sys.argv[3], "%Y-%m-%d").date()
+day = str(date.day)
 hour = int(sys.argv[4])
-day = "mon"
 mysql_connection()
