@@ -82,7 +82,7 @@ def mysql_connection():
 
         # check in regular time table
         cursor = cnx.cursor()
-        query = "SELECT * FROM attendance.time_table WHERE department = {department} AND semester = {semester} AND week_day = {day} AND hour = {hour}".format(
+        query = "SELECT * FROM attendance.time_table WHERE department = {department} AND semester = {semester} AND week_day = '{day}' AND hour = {hour}".format(
             department=department, semester=semester, day=str(day), hour=hour)
         cursor.execute(query)
 
