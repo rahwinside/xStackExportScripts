@@ -5,16 +5,11 @@ from datetime import time, datetime
 import mysql.connector
 from mysql.connector import errorcode
 
+from config import config
+
 
 def mysql_connection():
     global department, semester, hour, date, day, response_list, pk_table_list
-    config = {
-        'user': 'root',
-        'password': '',
-        'host': 'localhost',
-        'database': 'attendance',
-        'raise_on_warnings': True
-    }
 
     try:
         # check in super time table
