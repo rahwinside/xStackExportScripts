@@ -7,7 +7,7 @@ from mysql.connector import errorcode
 
 
 def mysql_connection():
-    global department, semester, hour, date, day
+    global department, semester, hour, date, day, response_list, pk_table_list
     config = {
         'user': 'root',
         'password': '',
@@ -19,13 +19,15 @@ def mysql_connection():
     try:
         # check in super time table
         cnx = mysql.connector.connect(**config)
+        response = "\"no-class\""
         cursor = cnx.cursor()
-        query = "SELECT * FROM attendance.time_table_super WHERE department = {department} AND semester = {semester} AND override_date = {date} AND hour = {hour}".format(
+        query = "SELECT * FROM attendance.time_table_super WHERE department = {department} AND semester = {semester} AND override_date = '{date}' AND hour = {hour}".format(
             department=department, semester=semester, date=str(date), hour=hour)
         cursor.execute(query)
 
         # run block if super time table is true
 
+        count = 0
         for row in cursor:
             year = "NA"
             if row[5] == 1 or row[5] == 2:
@@ -39,16 +41,24 @@ def mysql_connection():
             response = {"department": row[4], "year": year, "semester": str(row[5]), "subject_code": row[3],
                         "subject_name": row[2], "subCode_dept_sem": row[8].lower()}
 
-            pk_table = str(row[8]).lower()
-            cursor.close()
-            cursor = cnx.cursor()
+            response_list.append(response)
 
-            query = "SHOW COLUMNS FROM attendance." + pk_table
+            count += 1
+
+            pk_table = str(row[6]).lower()
+            pk_table_list.append(pk_table)
+            cursor.close()
+
+        for i in range(0, count):
+            cursor = cnx.cursor()
+            query = "SHOW COLUMNS FROM attendance." + pk_table_list[i]
             cursor.execute(query)
 
             col_schema = []
             for col in cursor:
                 col_schema.append(col)
+
+            cursor.close()
 
             col_schema = col_schema[1:]
 
@@ -67,48 +77,51 @@ def mysql_connection():
                     break
 
             if already_taken:
-                response['required_timestamp'] = str(required_timestamp)
-                response['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                response['displaydate'] = str(datetime.now().strftime("%d.%m.%Y - %A"))
-                print(str(response).replace("'", '"'))
-                return
+                response_list[i]['required_timestamp'] = str(required_timestamp)
+                response_list[i]['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                response_list[i]['displaydate'] = str(datetime.now().strftime("%d.%m.%Y - %A"))
+
             else:
-                response['required_timestamp'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                response['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                response['displaydate'] = str(datetime.now().strftime("%d.%m.%Y - %A"))
-                print(str(response).replace("'", '"'))
-                return
-        cursor.close()
+                response_list[i]['required_timestamp'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                response_list[i]['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                response_list[i]['displaydate'] = str(datetime.now().strftime("%d.%m.%Y - %A"))
 
         # check in regular time table
         cursor = cnx.cursor()
-        query = "SELECT * FROM attendance.time_table WHERE department = {department} AND semester = {semester} AND week_day = '{day}' AND hour = {hour}".format(
+        query = "SELECT DISTINCT `subject_name`, `subject_code`, `department`, `semester`, `week_day`, `hour`, `subCode_dept_sem` FROM attendance.time_table WHERE department = {department} AND semester = {semester} AND week_day = '{day}' AND hour = {hour}".format(
             department=department, semester=semester, day=str(day), hour=hour)
         cursor.execute(query)
+        # print(query)
 
+        # run block if regular time table is true
         for row in cursor:
             year = "NA"
-            if row[5] == 1 or row[5] == 2:
+            if row[3] == 1 or row[3] == 2:
                 year = "I"
-            if row[5] == 3 or row[5] == 4:
+            if row[3] == 3 or row[3] == 4:
                 year = "II"
-            if row[5] == 5 or row[5] == 6:
+            if row[3] == 5 or row[3] == 6:
                 year = "III"
-            if row[5] == 7 or row[5] == 8:
+            if row[3] == 7 or row[3] == 8:
                 year = "IV"
-            response = {"department": row[4], "year": year, "semester": str(row[5]), "subject_code": row[3],
-                        "subject_name": row[2], "subCode_dept_sem": row[8].lower()}
+            response = {"department": row[2], "year": year, "semester": str(row[3]), "subject_code": row[1],
+                        "subject_name": row[0], "subCode_dept_sem": row[6].lower()}
+            response_list.append(response)
 
-            pk_table = str(row[8]).lower()
+            pk_table = str(row[6]).lower()
+            pk_table_list.append(pk_table)
             cursor.close()
-            cursor = cnx.cursor()
 
-            query = "SHOW COLUMNS FROM attendance." + pk_table
+        for i in range(count, len(response_list)):
+            cursor = cnx.cursor()
+            query = "SHOW COLUMNS FROM attendance." + pk_table_list[i]
             cursor.execute(query)
 
             col_schema = []
             for col in cursor:
                 col_schema.append(col)
+
+            cursor.close()
 
             col_schema = col_schema[1:]
 
@@ -127,19 +140,20 @@ def mysql_connection():
                     break
 
             if already_taken:
-                response['required_timestamp'] = str(required_timestamp)
-                response['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                response['displaydate'] = str(datetime.now().strftime("%d.%m.%Y - %A"))
-                print(str(response).replace("'", '"'))
-                return
-            else:
-                response['required_timestamp'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                response['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                response['displaydate'] = str(datetime.now().strftime("%d.%m.%Y - %A"))
-                print(str(response).replace("'", '"'))
-                return
+                response_list[i]['required_timestamp'] = str(required_timestamp)
+                response_list[i]['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                response_list[i]['displaydate'] = str(datetime.now().strftime("%d.%m.%Y - %A"))
 
-        cursor.close()
+            else:
+                response_list[i]['required_timestamp'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                response_list[i]['datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                response_list[i]['displaydate'] = str(datetime.now().strftime("%d.%m.%Y - %A"))
+
+        if len(response_list) == 0:
+            print(response)
+
+        else:
+            print(str(response_list))
 
         cnx.close()
 
@@ -175,6 +189,11 @@ department = str(sys.argv[1])
 semester = int(sys.argv[2])
 
 date = datetime.strptime(sys.argv[3], "%Y-%m-%d").date()
-day = str(date.day)
+day = str(datetime.strptime(sys.argv[3], "%Y-%m-%d").date().strftime("%a")).lower()
+# day = "fri"
 hour = int(sys.argv[4])
+
+response_list = []
+pk_table_list = []
+
 mysql_connection()
