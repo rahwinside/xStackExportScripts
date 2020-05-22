@@ -5,7 +5,7 @@ from datetime import time, datetime
 import mysql.connector
 from mysql.connector import errorcode
 
-from config import config
+from local_config import config
 
 
 def mysql_connection():
